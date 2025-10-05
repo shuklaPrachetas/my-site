@@ -1,0 +1,37 @@
+name: CI with Caching
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Cache dependencies
+        id: cache-deps
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: cache-f66d115
+
+      - name: prime-cache-f66d115
+        run: |
+          if [ -n "${{ steps.cache-deps.outputs.cache-hit }}" ]; then
+            echo "Cache hit!"
+          else
+            echo "Cache miss!"
+          fi
+
+      - name: Install dependencies
+        run: npm install
